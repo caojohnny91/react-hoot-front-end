@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import * as hootService from "../../services/hootService";
+import CommentForm from "../CommentForm/CommentForm";
 
 const HootDetails = (props) => {
   const { hootId } = useParams(); // find the params on the url and expose them in an object
@@ -23,6 +24,28 @@ const HootDetails = (props) => {
 
   // Verify that hoot state is being set correctly:
   console.log("hoot state:", hoot);
+
+  const handleAddComment = async (commentFormData) => {
+    // console.log("commentFormData", commentFormData);
+    const newComment = await hootService.createComment(hootId, commentFormData);
+    // Within the hoot object, there is a comments property containing an array of comment objects. This array is the property we need to add our newComment to. To do so, we copy the existing hoot.comments array (again, using the spread operator), include the newComment at the end of the array, and finally assign this array to the comments property of the hoot
+    // Set state to an empty object:
+    // setHoot({});
+
+    // Set state to an object that includes all properties currently in Hoot state:
+    // setHoot({ ...hoot });
+
+    // Much like the step above, except now the comments property of the object
+    // being set to state has its value set to an empty array:
+    // setHoot({ ...hoot, comments: [] });
+
+    // Now the comments property of the object will include a copy of all
+    // the comments that already exist in hoot state.
+    // setHoot({ ...hoot, comments: [...hoot.comments] });
+
+    // And finally, we include the newComment at the end of the array:
+    setHoot({ ...hoot, comments: [...hoot.comments, newComment] });
+  };
 
   //   If you included the console.log() in the step above, you might notice that the hoot state is null when the component first mounts. This can cause some issues if we try to render data that is not yet present in the component. Let’s add a condition to account for that.
   if (!hoot) return <main>Loading...</main>;
@@ -49,6 +72,7 @@ const HootDetails = (props) => {
         The createdAt date property of the the comment.
         The text content of the comment. */}
         <h2>Comments</h2>
+        <CommentForm handleAddComment={handleAddComment} />
 
         {!hoot.comments.length && <p>There are no comments.</p>}
 

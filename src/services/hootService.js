@@ -46,4 +46,21 @@ const create = async (hootFormData) => {
   }
 };
 
-export { index, show, create };
+// Time to build out the service function. Despite being another resource, our comment service functions will live inside src/services/hootService.js. This is because all of the endpoints for comments will share the same BASE_URL as hoots ('/hoots'). We’ll append more specific endpoints to each comment service function as necessary.
+const createComment = async (hootId, commentFormData) => {
+  try {
+    const res = await fetch(`${BASE_URL}/${hootId}/comments`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(commentFormData),
+    });
+    return res.json();
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export { index, show, create, createComment };
