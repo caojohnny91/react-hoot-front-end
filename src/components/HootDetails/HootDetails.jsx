@@ -64,15 +64,6 @@ const HootDetails = (props) => {
       </header>
       <p>{hoot.text}</p>
 
-      {/* Time to add some conditional rendering for our button.
-            For our conditional rendering, we’ll make use of the Logical AND ( && ) operator.
-            If the hoot.author._id matches user._id, this piece of UI should be visible. If not, the UI should not be rendered. This means only the author of this particular hoot will be able to access the UI for updating or deleting a Hoot */}
-      {hoot.author._id === user._id && (
-        <>
-          <button onClick={() => props.handleDeleteHoot(hootId)}>Delete</button>
-        </>
-      )}
-
       {/* Notice the <section> tag at the bottom. This will act as our ‘Comments’ section. The commentSchema is embedded within hootSchema, so the relevant comment data should already exist within this component’s hoot state. */}
       <section>
         {/* To display a hoot’s associated comments, we’ll want to map() over hoot.comments and produce a list of <article> tags.
@@ -99,6 +90,14 @@ const HootDetails = (props) => {
           </article>
         ))}
       </section>
+      {/* Time to add some conditional rendering for our button.
+              For our conditional rendering, we’ll make use of the Logical AND ( && ) operator.
+              If the hoot.author._id matches user._id, this piece of UI should be visible. If not, the UI should not be rendered. This means only the author of this particular hoot will be able to access the UI for updating or deleting a Hoot */}
+      {hoot.author._id === user._id && (
+        <>
+          <button onClick={() => props.handleDeleteHoot(hootId)}>Delete Hoot</button>
+        </>
+      )}
     </main>
   );
 };
