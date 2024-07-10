@@ -33,6 +33,22 @@ const App = () => {
     setUser(null);
   };
 
+  const handleDeleteHoot = async (hootId) => {
+    // console.log("hootId", hootId);
+    // Call upon the service function:
+    const deletedHoot = await hootService.deleteHoot(hootId);
+
+    // Remember, the Array.prototype.filter() method returns a shallow copy of the array, excluding all elements that do not pass the test implemented by the provided callback function.
+
+    // In the code block above, our filter() method returns only the hoot objects whose _id values do not match the hootId.
+
+    // Try deleting a hoot. After clicking the delete button, you should be directed to the list page, where the hoot is no longer present. If you refresh your browser, you’ll notice that the hoot appears once more. This is occurs because at the moment, we are only managing our local state. No change has been made to the database. When the browser is refreshed, our hootService.index() runs once again, loading hoots from our database.
+    // Filter state using deletedHoot._id:
+    setHoots(hoots.filter((hoot) => hoot._id !== hootId));
+    // Redirect the user:
+    navigate("/hoots");
+  };
+
   // Notice the inclusion of user in our dependency array and the if condition placed around the invocation of fetchAllHoots().
   // Placing user in the dependency array causes the effect to fire off when the page loads or user state changes. Within our useEffect, we invoke fetchAllHoots, which in turn calls upon the index service. On the backend, our hoots index route is protected, which means the request won’t go through until a user is logged in. Including this if condition prevents the request from being made if a user is not logged in.
   useEffect(() => {
@@ -56,7 +72,10 @@ const App = () => {
             <>
               <Route path="/" element={<Dashboard user={user} />} />
               <Route path="/hoots" element={<HootList hoots={hoots} />} />
-              <Route path="/hoots/:hootId" element={<HootDetails />} />
+              <Route
+                path="/hoots/:hootId"
+                element={<HootDetails handleDeleteHoot={handleDeleteHoot} />}
+              />
               <Route
                 path="/hoots/new"
                 element={<HootForm handleAddHoot={handleAddHoot} />}

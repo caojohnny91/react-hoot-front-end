@@ -1,7 +1,8 @@
 import { useParams } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import * as hootService from "../../services/hootService";
 import CommentForm from "../CommentForm/CommentForm";
+import { AuthedUserContext } from "../../App";
 
 const HootDetails = (props) => {
   const { hootId } = useParams(); // find the params on the url and expose them in an object
@@ -12,6 +13,7 @@ const HootDetails = (props) => {
 
   // Create a new useState() variable called hoot with an initial value of null
   const [hoot, setHoot] = useState(null);
+  const user = useContext(AuthedUserContext);
 
   useEffect(() => {
     const fetchHoot = async () => {
@@ -61,6 +63,15 @@ const HootDetails = (props) => {
         </p>
       </header>
       <p>{hoot.text}</p>
+
+      {/* Time to add some conditional rendering for our button.
+            For our conditional rendering, we’ll make use of the Logical AND ( && ) operator.
+            If the hoot.author._id matches user._id, this piece of UI should be visible. If not, the UI should not be rendered. This means only the author of this particular hoot will be able to access the UI for updating or deleting a Hoot */}
+      {hoot.author._id === user._id && (
+        <>
+          <button onClick={() => props.handleDeleteHoot(hootId)}>Delete</button>
+        </>
+      )}
 
       {/* Notice the <section> tag at the bottom. This will act as our ‘Comments’ section. The commentSchema is embedded within hootSchema, so the relevant comment data should already exist within this component’s hoot state. */}
       <section>
