@@ -8,6 +8,7 @@ import SigninForm from "./components/SigninForm/SigninForm";
 import * as authService from "../src/services/authService"; // import the authservice
 import HootList from "./components/HootList/HootList";
 import * as hootService from "./services/hootService";
+import HootDetails from "./components/HootDetails/HootDetails";
 
 export const AuthedUserContext = createContext(null);
 
@@ -44,6 +45,7 @@ const App = () => {
             <>
               <Route path="/" element={<Dashboard user={user} />} />
               <Route path="/hoots" element={<HootList hoots={hoots} />} />
+              <Route path="/hoots/:hootId" element={<HootDetails />} />
             </>
           ) : (
             // Public Route:
