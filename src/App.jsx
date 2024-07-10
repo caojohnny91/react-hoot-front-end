@@ -77,6 +77,10 @@ const App = () => {
     navigate(`/hoots/${hootId}`);
   };
 
+  const handleDeleteComment = async (commentId) =>{
+    console.log("CommentId", commentId);
+  }
+
   return (
     <>
       <AuthedUserContext.Provider value={user}>

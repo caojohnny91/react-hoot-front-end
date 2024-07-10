@@ -101,6 +101,12 @@ const HootDetails = (props) => {
               </p>
             </header>
             <p>{comment.text}</p>
+
+            {comment.author._id === user._id && (
+                <>
+            <button>Delete Comment</button>
+                </>
+            )}
           </article>
         ))}
       </section>
