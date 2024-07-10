@@ -1,6 +1,7 @@
 // src/components/HootForm/HootForm.jsx
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import * as hootService from "../../services/hootService";
 
 const HootForm = (props) => {
   const [formData, setFormData] = useState({
@@ -15,12 +16,30 @@ const HootForm = (props) => {
 
   const handleSubmit = (evt) => {
     evt.preventDefault();
-    props.handleAddHoot(formData);
+    if (hootId) {
+      props.handleUpdateHoot(hootId, formData);
+    } else {
+      props.handleAddHoot(formData);
+    }
   };
+
+  const { hootId } = useParams();
+
+  // The first modification we’ll make to the functionality of the component relates to its initial state. If the user is updating a hoot, the inputs of our form should be prefilled with any existing hoot details. This will require calling upon the hootService.show() service within src/components/HootForm/HootForm.jsx
+  // Notice the if condition and the inclusion of hootId in the dependency array. If a hootId is present, we make a request to our server, and use the hootData response to setFormData state. If there is no hootId, we leave the initial state of formData unchanged.
+  useEffect(() => {
+    const fetchHoot = async () => {
+      const hootData = await hootService.show(hootId);
+      setFormData(hootData);
+    };
+    if (hootId) fetchHoot();
+  }, [hootId]);
 
   return (
     <main>
       <form onSubmit={handleSubmit}>
+        <h1>{hootId ? "Edit Hoot" : "New Hoot"}</h1>
+
         <label htmlFor="title-input">Title</label>
         <input
           required

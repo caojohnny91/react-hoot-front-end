@@ -62,6 +62,21 @@ const App = () => {
     if (user) fetchAllHoots();
   }, [user]);
 
+  const handleUpdateHoot = async (hootId, hootFormData) => {
+    // console.log("hootId:", hootId, "hootFormData:", hootFormData);
+    const updateHoot = await hootService.update(hootId, hootFormData);
+    setHoots(hoots.map((hoot) => (hootId === hoot.id ? updateHoot : hoot)));
+    // This implementation of the Array.prototype.map() method is a bit different from the mapping of JSX elements you’ve seen in React previously. Let’s take a moment to discuss the code above.
+
+    // Remember, hoots state is an array of hoot objects. Calling upon hootService.update() has given us access to an updatedHoot. This updatedHoot object needs to be added to hoots state. To do so, we need to replace the original version of that object with the updatedHoot.
+
+    // By mapping over the hoots array, we are able to check each hoot object. If the current element being processed has an _id that matches updatedHoot._id, we replace it with the updatedHoot that was returned from our backend. If the _id instances do not match, we simply return the existing element.
+
+    // Through this process we are able to update a single object held in hoots state, while also maintaining an accurate record of the remaining elements in the array.
+
+    navigate(`/hoots/${hootId}`);
+  };
+
   return (
     <>
       <AuthedUserContext.Provider value={user}>
@@ -79,6 +94,10 @@ const App = () => {
               <Route
                 path="/hoots/new"
                 element={<HootForm handleAddHoot={handleAddHoot} />}
+              />
+              <Route
+                path="/hoots/:hootId/edit"
+                element={<HootForm handleUpdateHoot={handleUpdateHoot} />}
               />
             </>
           ) : (

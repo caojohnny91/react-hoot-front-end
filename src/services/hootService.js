@@ -77,4 +77,21 @@ const deleteHoot = async (hootId) => {
   }
 };
 
-export { index, show, create, createComment, deleteHoot };
+// The following code should mirror much of the functionality you’ve seen elsewhere in this lesson. Our update service function will depart slightly from create, in that it issues a PUT request and requires two parameters. The first parameter will be used to identify the hoot, and the second parameter contains the information that the hoot will be updated with. Additionally, modifying hoots state with the updated hoot will be a bit more involved than what you saw with handleAddHoot
+const update = async (hootId, hootFormData) => {
+  try {
+    const res = await fetch(`${BASE_URL}/${hootId}`, {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(hootFormData),
+    });
+    return res.json();
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export { index, show, create, createComment, deleteHoot, update };
