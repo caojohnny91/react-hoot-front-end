@@ -1,5 +1,5 @@
 import { useState, createContext, useEffect } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import NavBar from "./components/NavBar/NavBar";
 import Landing from "./components/Landing/Landing";
 import Dashboard from "./components/Dashboard/Dashboard";
@@ -9,6 +9,7 @@ import * as authService from "../src/services/authService"; // import the authse
 import HootList from "./components/HootList/HootList";
 import * as hootService from "./services/hootService";
 import HootDetails from "./components/HootDetails/HootDetails";
+import HootForm from "./components/HootForm/HootForm";
 
 export const AuthedUserContext = createContext(null);
 
@@ -16,6 +17,16 @@ const App = () => {
   const [user, setUser] = useState(authService.getUser()); // using the method from authservice
 
   const [hoots, setHoots] = useState([]);
+
+  // create a new instance of the useNavigate() hook within the component function:
+  const navigate = useNavigate();
+
+  const handleAddHoot = async (hootFormData) => {
+    // console.log("hootFormData", hootFormData);
+    const newHoot = await hootService.create(hootFormData);
+    setHoots([newHoot, ...hoots]);
+    navigate("/hoots");
+  };
 
   const handleSignout = () => {
     authService.signout();
@@ -46,6 +57,10 @@ const App = () => {
               <Route path="/" element={<Dashboard user={user} />} />
               <Route path="/hoots" element={<HootList hoots={hoots} />} />
               <Route path="/hoots/:hootId" element={<HootDetails />} />
+              <Route
+                path="/hoots/new"
+                element={<HootForm handleAddHoot={handleAddHoot} />}
+              />
             </>
           ) : (
             // Public Route:

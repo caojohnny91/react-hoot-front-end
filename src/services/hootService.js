@@ -22,4 +22,28 @@ const show = async (hootId) => {
     console.log(error);
   }
 };
-export { index, show };
+
+// Next we’ll build out the create service function. This will differ from previous service functions in this code-along, as it will require a POST request method. When using the Fetch API to make POST requests, we’ll need to include a few additional properties in our request:
+
+// method: The method property specifies the method of our request. With the Fetch API, this property is necessary whenever making a request other than the default GET.
+
+// body: The body property specifies the form data to include in the request. We’ll make use of the JSON.stringify() method here. Check out this link for more info on the JSON object.
+
+// 'Content-Type': Within our headers object, we’ll also need to specify the data type of the information included in the body property. In this case, we’ll set it to 'application/json'
+const create = async (hootFormData) => {
+  try {
+    const res = await fetch(BASE_URL, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(hootFormData),
+    });
+    return res.json();
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export { index, show, create };
