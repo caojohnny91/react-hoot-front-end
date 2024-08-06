@@ -1,40 +1,56 @@
 // src/components/CommentForm/CommentForm.jsx
 import { useState, useEffect } from "react";
 import * as hootService from "../../services/hootService";
-import { useParams } from "react-router-dom";
-import * as hootService from "../../services/hootService";
+import { useParams, useNavigate } from "react-router-dom";
 
 const CommentForm = (props) => {
   const [formData, setFormData] = useState({ text: "" });
   const { hootId, commentId } = useParams();
+  const navigate = useNavigate();
 
-  // Fetch existing comment data if commentId exists
   useEffect(() => {
-    if (commentId) {
-      const fetchComment = async () => {
-        const commentData = await hootService.getComment(hootId, commentId);
-        setFormData({ text: commentData.text });
-      };
-      fetchComment();
-    }
+    const fetchHoot = async () => {
+      try {
+        const hootData = await hootService.show(hootId);
+        // Find comment in fetched hoot data
+        const commentToEdit = hootData.comments.find((comment) => comment._id === commentId);
+        if (commentToEdit) {
+          setFormData({ text: commentToEdit.text });
+        }
+      } catch (error) {
+        console.error("Failed to fetch hoot or comment data:", error);
+      }
+    };
+    if (hootId && commentId) fetchHoot();
   }, [hootId, commentId]);
-
   const handleChange = (evt) => {
     setFormData({ ...formData, [evt.target.name]: evt.target.value });
   };
 
-  const handleSubmit = (evt) => {
+  const handleSubmit = async (evt) => {
     evt.preventDefault();
-    if (commentId) {
-      // handleUpdateComment if commentId exists
-      props.handleUpdateComment(commentId, formData);
+    if (hootId && commentId) {
+      try {
+        // Update the comment
+        const updatedComment = await hootService.updateComment(hootId, commentId, formData);
+
+        // Update the state in the parent component (if passed as a prop)
+        if (props.handleUpdateCommentInState) {
+          props.handleUpdateCommentInState(updatedComment);
+        }
+
+        // Navigate back to the hoot details page
+        navigate(`/hoots/${hootId}`);
+      } catch (error) {
+        console.error("Failed to update comment:", error);
+      }
     } else {
-      // handleAddComment if no commentId (new comment)
+      // Handle adding a new comment
       props.handleAddComment(formData);
     }
+
     setFormData({ text: "" });
   };
-
   return (
     <form onSubmit={handleSubmit}>
       <label htmlFor="text-input">Your comment:</label>
