@@ -50,6 +50,11 @@ const HootDetails = (props) => {
     setHoot({ ...hoot, comments: [...hoot.comments, newComment] });
   };
 
+  const handleDeleteComment = async (commentID) => {
+    console.log("commentId:", commentID);
+    setHoot({ ...hoot, comments: hoot.comments.filter((comment) => comment._id !== commentID) });
+  };
+
   // If you included the console.log() in the step above, you might notice that the hoot state is null when the component first mounts. This can cause some issues if we try to render data that is not yet present in the component. Let’s add a condition to account for that.
   if (!hoot) return <main>Loading...</main>;
 
@@ -59,8 +64,7 @@ const HootDetails = (props) => {
         <p>{hoot.category.toUpperCase()}</p>
         <h1>{hoot.title}</h1>
         <p>
-          {hoot.author.username} posted on{" "}
-          {new Date(hoot.createdAt).toLocaleDateString()}
+          {hoot.author.username} posted on {new Date(hoot.createdAt).toLocaleDateString()}
         </p>
       </header>
       <p>{hoot.text}</p>
@@ -72,9 +76,7 @@ const HootDetails = (props) => {
         <>
           <Link to={`/hoots/${hootId}/edit`}>Edit Hoot</Link>
 
-          <button onClick={() => props.handleDeleteHoot(hootId)}>
-            Delete Hoot
-          </button>
+          <button onClick={() => props.handleDeleteHoot(hootId)}>Delete Hoot</button>
         </>
       )}
 
@@ -96,16 +98,15 @@ const HootDetails = (props) => {
           <article key={comment._id}>
             <header>
               <p>
-                {comment.author.username} posted on{" "}
-                {new Date(comment.createdAt).toLocaleDateString()}
+                {comment.author.username} posted on {new Date(comment.createdAt).toLocaleDateString()}
               </p>
             </header>
             <p>{comment.text}</p>
 
             {comment.author._id === user._id && (
-                <>
-            <button>Delete Comment</button>
-                </>
+              <>
+                <button onClick={() => handleDeleteComment(comment._id)}>Delete</button>
+              </>
             )}
           </article>
         ))}

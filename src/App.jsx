@@ -77,10 +77,6 @@ const App = () => {
     navigate(`/hoots/${hootId}`);
   };
 
-  const handleDeleteComment = async (commentId) =>{
-    console.log("CommentId", commentId);
-  }
-
   return (
     <>
       <AuthedUserContext.Provider value={user}>
@@ -91,18 +87,9 @@ const App = () => {
             <>
               <Route path="/" element={<Dashboard user={user} />} />
               <Route path="/hoots" element={<HootList hoots={hoots} />} />
-              <Route
-                path="/hoots/:hootId"
-                element={<HootDetails handleDeleteHoot={handleDeleteHoot} />}
-              />
-              <Route
-                path="/hoots/new"
-                element={<HootForm handleAddHoot={handleAddHoot} />}
-              />
-              <Route
-                path="/hoots/:hootId/edit"
-                element={<HootForm handleUpdateHoot={handleUpdateHoot} />}
-              />
+              <Route path="/hoots/:hootId" element={<HootDetails handleDeleteHoot={handleDeleteHoot} />} />
+              <Route path="/hoots/new" element={<HootForm handleAddHoot={handleAddHoot} />} />
+              <Route path="/hoots/:hootId/edit" element={<HootForm handleUpdateHoot={handleUpdateHoot} />} />
             </>
           ) : (
             // Public Route:
