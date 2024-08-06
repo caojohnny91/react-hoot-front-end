@@ -1,6 +1,7 @@
 // src/components/CommentForm/CommentForm.jsx
 import { useState, useEffect } from "react";
 import * as hootService from "../../services/hootService";
+import { useParams } from 'react-router-dom';
 
 const CommentForm = (props) => {
   const [formData, setFormData] = useState({ text: "" });
