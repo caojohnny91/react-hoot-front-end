@@ -4,6 +4,7 @@ import * as hootService from "../../services/hootService";
 import CommentForm from "../CommentForm/CommentForm";
 import { AuthedUserContext } from "../../App";
 import { Link } from "react-router-dom";
+import styles from "./HootDetails.module.css";
 
 const HootDetails = (props) => {
   const { hootId } = useParams(); // find the params on the url and expose them in an object
@@ -71,60 +72,63 @@ const HootDetails = (props) => {
   if (!hoot) return <main>Loading...</main>;
 
   return (
-    <main>
-      <header>
-        <p>{hoot.category.toUpperCase()}</p>
-        <h1>{hoot.title}</h1>
-        <p>
-          {hoot.author.username} posted on {new Date(hoot.createdAt).toLocaleDateString()}
-        </p>
-      </header>
-      <p>{hoot.text}</p>
-
-      {/* Time to add some conditional rendering for our button.
-        For our conditional rendering, we’ll make use of the Logical AND ( && ) operator.
-        If the hoot.author._id matches user._id, this piece of UI should be visible. If not, the UI should not be rendered. This means only the author of this particular hoot will be able to access the UI for updating or deleting a Hoot */}
-      {hoot.author._id === user._id && (
-        <>
-          <Link to={`/hoots/${hootId}/edit`}>Edit Hoot</Link>
-
-          <button onClick={() => props.handleDeleteHoot(hootId)}>Delete Hoot</button>
-        </>
-      )}
-
+    <main className={styles.container}>
       {/* Notice the <section> tag at the bottom. This will act as our ‘Comments’ section. The commentSchema is embedded within hootSchema, so the relevant comment data should already exist within this component’s hoot state. */}
       <section>
-        {/* To display a hoot’s associated comments, we’ll want to map() over hoot.comments and produce a list of <article> tags.
+        <header>
+          <p>{hoot.category.toUpperCase()}</p>
+          <h1>{hoot.title}</h1>
+          <div>
+            <p>
+              {hoot.author.username} posted on {new Date(hoot.createdAt).toLocaleDateString()}
+            </p>
+            {/* Time to add some conditional rendering for our button.
+        For our conditional rendering, we’ll make use of the Logical AND ( && ) operator.
+        If the hoot.author._id matches user._id, this piece of UI should be visible. If not, the UI should not be rendered. This means only the author of this particular hoot will be able to access the UI for updating or deleting a Hoot */}
+            {hoot.author._id === user._id && (
+              <>
+                <Link to={`/hoots/${hootId}/edit`}>Edit Hoot</Link>
+
+                <button onClick={() => props.handleDeleteHoot(hootId)}>Delete Hoot</button>
+              </>
+            )}
+          </div>
+        </header>
+        <p>{hoot.text}</p>
+      </section>
+
+      {/* To display a hoot’s associated comments, we’ll want to map() over hoot.comments and produce a list of <article> tags.
         
         Each comment’s <article> tag should include a few things:
 
         The username of the comment’s author.
         The createdAt date property of the the comment.
         The text content of the comment. */}
-        <h2>Comments</h2>
-        <CommentForm handleAddComment={handleAddComment} />
+      <h2>Comments</h2>
+      <CommentForm handleAddComment={handleAddComment} />
 
-        {!hoot.comments.length && <p>There are no comments.</p>}
+      {!hoot.comments.length && <p>There are no comments.</p>}
 
-        {hoot.comments.map((comment) => (
-          <article key={comment._id}>
-            <header>
+      {hoot.comments.map((comment) => (
+        <article key={comment._id}>
+          <header>
+            <div>
               <p>
                 {comment.author.username} posted on {new Date(comment.createdAt).toLocaleDateString()}
               </p>
-            </header>
-            <p>{comment.text}</p>
 
-            {comment.author._id === user._id && (
-              <>
-                <Link to={`/hoots/${hootId}/comments/${comment._id}/edit`}>Edit</Link>
+              {comment.author._id === user._id && (
+                <>
+                  <Link to={`/hoots/${hootId}/comments/${comment._id}/edit`}>Edit</Link>
 
-                <button onClick={() => handleDeleteComment(comment._id)}>Delete</button>
-              </>
-            )}
-          </article>
-        ))}
-      </section>
+                  <button onClick={() => handleDeleteComment(comment._id)}>Delete</button>
+                </>
+              )}
+            </div>
+          </header>
+          <p>{comment.text}</p>
+        </article>
+      ))}
     </main>
   );
 };

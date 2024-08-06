@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import * as hootService from "../../services/hootService";
+import styles from "./HootForm.module.css";
 
 const HootForm = (props) => {
   const [formData, setFormData] = useState({
@@ -36,36 +37,16 @@ const HootForm = (props) => {
   }, [hootId]);
 
   return (
-    <main>
+    <main className={styles.container}>
       <form onSubmit={handleSubmit}>
         <h1>{hootId ? "Edit Hoot" : "New Hoot"}</h1>
 
         <label htmlFor="title-input">Title</label>
-        <input
-          required
-          type="text"
-          name="title"
-          id="title-input"
-          value={formData.title}
-          onChange={handleChange}
-        />
+        <input required type="text" name="title" id="title-input" value={formData.title} onChange={handleChange} />
         <label htmlFor="text-input">Text</label>
-        <textarea
-          required
-          type="text"
-          name="text"
-          id="text-input"
-          value={formData.text}
-          onChange={handleChange}
-        />
+        <textarea required type="text" name="text" id="text-input" value={formData.text} onChange={handleChange} />
         <label htmlFor="category-input">Category</label>
-        <select
-          required
-          name="category"
-          id="category-input"
-          value={formData.category}
-          onChange={handleChange}
-        >
+        <select required name="category" id="category-input" value={formData.category} onChange={handleChange}>
           <option value="News">News</option>
           <option value="Games">Games</option>
           <option value="Music">Music</option>
