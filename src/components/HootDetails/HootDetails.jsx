@@ -5,6 +5,9 @@ import CommentForm from "../CommentForm/CommentForm";
 import { AuthedUserContext } from "../../App";
 import { Link } from "react-router-dom";
 import styles from "./HootDetails.module.css";
+import Loading from "../Loading/Loading";
+import Icon from "../Icon/Icon";
+import AuthorInfo from "../../components/AuthorInfo/AuthorInfo";
 
 const HootDetails = (props) => {
   const { hootId } = useParams(); // find the params on the url and expose them in an object
@@ -69,7 +72,7 @@ const HootDetails = (props) => {
   };
 
   // If you included the console.log() in the step above, you might notice that the hoot state is null when the component first mounts. This can cause some issues if we try to render data that is not yet present in the component. Let’s add a condition to account for that.
-  if (!hoot) return <main>Loading...</main>;
+  if (!hoot) return <Loading />;
 
   return (
     <main className={styles.container}>
@@ -79,56 +82,59 @@ const HootDetails = (props) => {
           <p>{hoot.category.toUpperCase()}</p>
           <h1>{hoot.title}</h1>
           <div>
-            <p>
-              {hoot.author.username} posted on {new Date(hoot.createdAt).toLocaleDateString()}
-            </p>
+            <AuthorInfo content={hoot} />
             {/* Time to add some conditional rendering for our button.
         For our conditional rendering, we’ll make use of the Logical AND ( && ) operator.
         If the hoot.author._id matches user._id, this piece of UI should be visible. If not, the UI should not be rendered. This means only the author of this particular hoot will be able to access the UI for updating or deleting a Hoot */}
             {hoot.author._id === user._id && (
               <>
-                <Link to={`/hoots/${hootId}/edit`}>Edit Hoot</Link>
-
-                <button onClick={() => props.handleDeleteHoot(hootId)}>Delete Hoot</button>
+                <Link to={`/hoots/${hootId}/edit`}>
+                  <Icon category="Edit" />
+                </Link>
+                <button onClick={() => props.handleDeleteHoot(hootId)}>
+                  <Icon category="Trash" />
+                </button>
               </>
             )}
           </div>
         </header>
         <p>{hoot.text}</p>
       </section>
-
-      {/* To display a hoot’s associated comments, we’ll want to map() over hoot.comments and produce a list of <article> tags.
+      <section>
+        {/* To display a hoot’s associated comments, we’ll want to map() over hoot.comments and produce a list of <article> tags.
         
         Each comment’s <article> tag should include a few things:
 
         The username of the comment’s author.
         The createdAt date property of the the comment.
         The text content of the comment. */}
-      <h2>Comments</h2>
-      <CommentForm handleAddComment={handleAddComment} />
+        <h2>Comments</h2>
+        <CommentForm handleAddComment={handleAddComment} />
 
-      {!hoot.comments.length && <p>There are no comments.</p>}
+        {!hoot.comments.length && <p>There are no comments.</p>}
 
-      {hoot.comments.map((comment) => (
-        <article key={comment._id}>
-          <header>
-            <div>
-              <p>
-                {comment.author.username} posted on {new Date(comment.createdAt).toLocaleDateString()}
-              </p>
+        {hoot.comments.map((comment) => (
+          <article key={comment._id}>
+            <header>
+              <div>
+                <AuthorInfo content={comment} />
 
-              {comment.author._id === user._id && (
-                <>
-                  <Link to={`/hoots/${hootId}/comments/${comment._id}/edit`}>Edit</Link>
-
-                  <button onClick={() => handleDeleteComment(comment._id)}>Delete</button>
-                </>
-              )}
-            </div>
-          </header>
-          <p>{comment.text}</p>
-        </article>
-      ))}
+                {comment.author._id === user._id && (
+                  <>
+                    <Link to={`/hoots/${hootId}/comments/${comment._id}/edit`}>
+                      <Icon category="Edit" />
+                    </Link>
+                    <button onClick={() => handleDeleteComment(comment._id)}>
+                      <Icon category="Trash" />
+                    </button>
+                  </>
+                )}
+              </div>
+            </header>
+            <p>{comment.text}</p>
+          </article>
+        ))}
+      </section>
     </main>
   );
 };
