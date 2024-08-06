@@ -23,7 +23,7 @@ const HootForm = (props) => {
     }
   };
 
-  const { hootId } = useParams();
+  const { hootId, commentId } = useParams();
 
   // The first modification we’ll make to the functionality of the component relates to its initial state. If the user is updating a hoot, the inputs of our form should be prefilled with any existing hoot details. This will require calling upon the hootService.show() service within src/components/HootForm/HootForm.jsx
   // Notice the if condition and the inclusion of hootId in the dependency array. If a hootId is present, we make a request to our server, and use the hootData response to setFormData state. If there is no hootId, we leave the initial state of formData unchanged.
