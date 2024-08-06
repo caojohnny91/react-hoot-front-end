@@ -33,7 +33,9 @@ const NavBar = ({ handleSignout }) => {
         </nav>
       ) : (
         <nav className={styles.container}>
-          <Link to='/'><img src={Logo} alt="A cute owl" /></Link>
+          <Link to="/">
+            <img src={Logo} alt="A cute owl" />
+          </Link>
           <ul>
             <li>
               <Link to="/signin">Sign In</Link>
