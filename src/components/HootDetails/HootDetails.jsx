@@ -50,9 +50,21 @@ const HootDetails = (props) => {
     setHoot({ ...hoot, comments: [...hoot.comments, newComment] });
   };
 
-  const handleDeleteComment = async (commentID) => {
-    console.log("commentId:", commentID);
-    setHoot({ ...hoot, comments: hoot.comments.filter((comment) => comment._id !== commentID) });
+  const handleDeleteComment = async (commentId) => {
+    console.log("commentId:", commentId);
+
+    try {
+      // Call the deleteComment service function with hootId and commentId
+      await hootService.deleteComment(hoot._id, commentId);
+
+      // Update the state to filter out the deleted comment
+      setHoot({
+        ...hoot,
+        comments: hoot.comments.filter((comment) => comment._id !== commentId),
+      });
+    } catch (error) {
+      console.error("Failed to delete comment:", error);
+    }
   };
 
   // If you included the console.log() in the step above, you might notice that the hoot state is null when the component first mounts. This can cause some issues if we try to render data that is not yet present in the component. Let’s add a condition to account for that.
